@@ -37,7 +37,7 @@ function App() {
         onDeleteItem={handleDeleteItem}
         onToggleItem={handleToggleItem}
       />
-      <Stats />
+      <Stats items={items} />
     </div>
   );
 }
@@ -103,6 +103,7 @@ function Item({ item, onDeleteItem, onToggleItem }) {
       <input
         type="checkbox"
         value={item.packed}
+        checked={item.packed}
         onChange={() => onToggleItem(item.id)}
       />
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
@@ -113,10 +114,26 @@ function Item({ item, onDeleteItem, onToggleItem }) {
   );
 }
 
-function Stats() {
+function Stats({ items }) {
+  if (!items.length)
+    return (
+      <p className="stats">
+        <em>Add some items to your packing list 🚀</em>
+      </p>
+    );
+
+  const numItems = items.length;
+  const numPacked = items.filter((item) => item.packed).length;
+  const percentage = Math.round((numPacked / numItems) * 100);
+
   return (
     <footer className="stats">
-      <em>💼You have X items on your list, and you already packed X (X%)</em>
+      <em>
+        {percentage === 100
+          ? "You have everything to go ✈"
+          : `💼You have ${numItems} items on your list, and you already packed
+        ${numPacked} (${percentage}%)`}
+      </em>
     </footer>
   );
 }
